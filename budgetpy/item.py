@@ -36,12 +36,13 @@ class Item:
     
     def _validate_name(self, name: str) -> str:
         """Validate and convert the name to string."""
-        if not isinstance(name, str):
-            try:
-                name = str(name)
-            except (ValueError, TypeError):
-                raise ValueError("Name must be convertible to string")
-        return name
+        if name is None:
+            raise ValueError("Name must be convertible to string")
+        if isinstance(name, str):
+            return name
+        if isinstance(name, (int, float)):
+            return str(name)
+        raise ValueError("Name must be convertible to string")
     
     def _validate_amount(self, amount: Union[int, float, str]) -> float:
         """Validate and convert the amount to float."""
@@ -60,7 +61,7 @@ class Item:
             except ValueError:
                 raise ValueError("Day must be in YYYY-MM-DD format or a date object")
         elif not isinstance(day, date):
-            raise ValueError("Day must be a string in YYYY-MM-DD format or a date object")
+            raise ValueError("Day must be in YYYY-MM-DD format or a date object")
         return day
     
     def _validate_recurring(self, recurring: Optional[str]) -> Optional[str]:
@@ -132,5 +133,6 @@ class Item:
     
     def __repr__(self) -> str:
         """Return a string representation of the item."""
+        day_repr = f"datetime.date({self.day.year}, {self.day.month}, {self.day.day})"
         recurring_str = f", recurring='{self.recurring}'" if self.recurring else ""
-        return f"Item(name='{self.name}', amount={self.amount}, day={self.day}{recurring_str})" 
+        return f"Item(name='{self.name}', amount={self.amount}, day={day_repr}{recurring_str})" 

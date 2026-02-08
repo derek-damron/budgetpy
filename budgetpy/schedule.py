@@ -20,6 +20,8 @@ class Schedule:
         Args:
             *items: One or more Item objects to include in the schedule
         """
+        if len(items) == 0:
+            raise ValueError("All arguments must be Item objects")
         self.items = []
         for item in items:
             if not isinstance(item, Item):
