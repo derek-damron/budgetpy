@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "budgetpy"
 version = "0.1.0"
-description = "Add your description here"
+description = "A Python package for personal budget management, inspired by the R package budgetr."
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [

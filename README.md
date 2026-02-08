@@ -1,19 +1,36 @@
-# BudgetPy
+# budgetpy
 
 A Python package for personal budget management, inspired by the R package `budgetr`.
 
 ## Installation
 
+**Requirements:** Python 3.14+
+
+From [PyPI](https://pypi.org/project/budgetpy/) (when published):
+
 ```bash
 pip install budgetpy
 ```
 
+With [uv](https://github.com/astral-sh/uv): `uv pip install budgetpy`
+
+From source (development):
+
+```bash
+git clone https://github.com/yourusername/budgetpy.git
+cd budgetpy
+pip install -e .
+```
+
+With uv: `uv pip install -e .`
+
+Dependencies (pandas, matplotlib, python-dateutil) are installed automatically with the package.
+
 ## Usage
 
-Here's a simple example of how to use BudgetPy:
+Here's a simple example of how to use budgetpy. For a fuller example with one-time items, "2 weeks" recurrence, and inspecting the transaction table, see [main.py](main.py).
 
 ```python
-from datetime import date
 from budgetpy import Item, Schedule, Budget
 
 # Create income items
@@ -47,17 +64,36 @@ my_budget = Budget(
 balance = my_budget.get_balance("2023-01-15")
 print(f"Balance on January 15th: ${balance:.2f}")
 
+# Get end-date balance (omit the date argument)
+print(f"Final balance: ${my_budget.get_balance():.2f}")
+
+# Inspect the transaction table (date, name, amount, balance)
+print(my_budget.df)
+
 # Plot the budget balance over time
 my_budget.plot()
 ```
 
 ## Features
 
-- Create budget items with recurring patterns (daily, weekly, monthly, yearly)
+- Create budget items with recurring patterns (daily, weekly, monthly, yearly) or N-unit patterns (e.g. "2 weeks", "3 months")
+- One-time (non-recurring) items for single expenses or income
 - Manage multiple items in a schedule
 - Track balance over time
+- Inspect or export the transaction table as a pandas DataFrame (`Budget.df`)
 - Visualize budget with matplotlib plots
-- Flexible date handling (supports both string dates and datetime.date objects)
+- Flexible date handling (string dates in YYYY-MM-DD or YYYYMMDD format, or `datetime.date` objects)
+
+## Development
+
+Install in editable mode, then run the test suite:
+
+```bash
+pip install -e .
+pytest
+```
+
+With [uv](https://github.com/astral-sh/uv): `uv pip install -e .` and `uv run pytest`.
 
 ## License
 
