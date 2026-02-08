@@ -30,6 +30,10 @@ class Budget:
             end: The end date for the budget (default: 90 days after start)
             initial: The initial amount in the budget (default: 0.0)
         """
+        if schedule is None:
+            raise ValueError("Please provide a schedule for your budget")
+        if not isinstance(schedule, Schedule):
+            raise ValueError("The object provided is not a schedule")
         self.schedule = schedule
         self.start = self._validate_date(start)
         self.end = self._validate_date(end) if end else self.start + pd.Timedelta(days=90)
@@ -47,9 +51,12 @@ class Budget:
             try:
                 return datetime.strptime(date_value, "%Y-%m-%d").date()
             except ValueError:
-                raise ValueError("Date must be in YYYY-MM-DD format or a date object")
+                try:
+                    return datetime.strptime(date_value, "%Y%m%d").date()
+                except ValueError:
+                    raise ValueError("Date must be in YYYY-MM-DD format or a date object")
         elif not isinstance(date_value, date):
-            raise ValueError("Date must be a string in YYYY-MM-DD format or a date object")
+            raise ValueError("Date must be in YYYY-MM-DD format or a date object")
         return date_value
     
     def _validate_amount(self, amount: Union[int, float, str]) -> float:
@@ -101,6 +108,10 @@ class Budget:
         date = self._validate_date(date)
         if date < self.start or date > self.end:
             raise ValueError("Date must be within the budget period")
+
+        # Balance at start date is the initial amount (before same-day transactions)
+        if date == self.start:
+            return self.initial
             
         # Find the last row with date <= specified date
         mask = self.df['date'] <= date
@@ -123,7 +134,9 @@ class Budget:
     
     def __repr__(self) -> str:
         """Return a string representation of the budget."""
+        start_repr = f"datetime.date({self.start.year}, {self.start.month}, {self.start.day})"
+        end_repr = f"datetime.date({self.end.year}, {self.end.month}, {self.end.day})"
         return (
-            f"Budget(start={self.start}, end={self.end}, initial={self.initial}, "
+            f"Budget(start={start_repr}, end={end_repr}, initial={self.initial}, "
             f"items={len(self.schedule.items)})"
         ) 

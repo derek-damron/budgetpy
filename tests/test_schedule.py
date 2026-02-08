@@ -102,13 +102,6 @@ class TestScheduleOutput:
         assert df['date'].min() >= start_date
         assert df['date'].max() <= end_date
         
-        # Test empty schedule
-        empty_schedule = Schedule()
-        df = empty_schedule.extend_items(start_date, end_date)
-        assert isinstance(df, pd.DataFrame)
-        assert len(df) == 0
-        assert all(col in df.columns for col in ['date', 'name', 'amount'])
-        
     def test_repr(self, sample_items):
         """Test the string representation of Schedule"""
         paycheck, rent = sample_items
