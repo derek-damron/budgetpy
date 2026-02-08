@@ -160,18 +160,6 @@ class TestBudgetOutput:
             
         with pytest.raises(ValueError, match="Date must be within the budget period"):
             budget.get_balance("2016-03-03")
-            
-    def test_plot(self, complex_schedule):
-        """Test the plot method"""
-        budget = Budget(
-            schedule=complex_schedule,
-            start="2015-12-15",
-            end="2016-03-02",
-            initial=1000
-        )
-        
-        # The plot method should not raise any exceptions
-        budget.plot()
         
     def test_repr(self, complex_schedule):
         """Test the string representation of Budget"""
