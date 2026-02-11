@@ -160,6 +160,37 @@ class TestBudgetOutput:
             
         with pytest.raises(ValueError, match="Date must be within the budget period"):
             budget.get_balance("2016-03-03")
+
+    def test_get_balance_default_date_uses_final_balance(self, complex_schedule):
+        """Test that calling get_balance() with no date uses the final balance."""
+        budget = Budget(
+            schedule=complex_schedule,
+            start="2015-12-15",
+            end="2016-03-02",
+            initial=1000
+        )
+        assert budget.get_balance() == pytest.approx(budget.df["balance"].iloc[-1])
+
+    def test_budget_creation_raises_when_schedule_has_no_items_in_range(self):
+        """Test that Budget raises when the schedule has no items in the given date range."""
+        # Item occurs before the budget period and does not recur
+        early_item = Item(
+            name="Old Income",
+            amount=1000,
+            day="2010-01-01",
+        )
+        schedule = Schedule(early_item)
+
+        with pytest.raises(
+            ValueError,
+            match="No items in the schedule apply between start and end dates",
+        ):
+            Budget(
+                schedule=schedule,
+                start="2016-01-01",
+                end="2016-01-10",
+                initial=0,
+            )
         
     def test_repr(self, complex_schedule):
         """Test the string representation of Budget"""
