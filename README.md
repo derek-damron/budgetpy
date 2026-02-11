@@ -86,14 +86,16 @@ my_budget.plot()
 
 ## Development
 
-Install in editable mode, then run the test suite:
+Install in editable mode with dev dependencies (pytest, pytest-cov), then run the test suite:
 
 ```bash
-pip install -e .
+pip install -e ".[dev]"
 pytest
 ```
 
-With [uv](https://github.com/astral-sh/uv): `uv pip install -e .` and `uv run pytest`.
+With [uv](https://github.com/astral-sh/uv): `uv pip install -e ".[dev]"` and `uv run pytest`.
+
+Run tests with coverage: `pytest --cov=budgetpy` (or `uv run pytest --cov=budgetpy`). For an HTML report: `pytest --cov=budgetpy --cov-report=html` (output in `htmlcov/`).
 
 ## License
 

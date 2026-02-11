@@ -11,6 +11,23 @@ requires-python = ">=3.14"
 dependencies = [
     "matplotlib>=3.0.0",
     "pandas>=1.0.0",
-    "pytest>=7.0.0",
     "python-dateutil>=2.8.0",
 ]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+]
+
+[tool.coverage.run]
+source = ["budgetpy"]
+omit = ["*/tests/*", "main.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+]
+# fail_under = 80  # optional: uncomment to enforce minimum coverage
