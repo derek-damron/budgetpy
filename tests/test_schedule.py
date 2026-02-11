@@ -101,6 +101,42 @@ class TestScheduleOutput:
         assert all(col in df.columns for col in ['date', 'name', 'amount'])
         assert df['date'].min() >= start_date
         assert df['date'].max() <= end_date
+
+    def test_extend_items_invalid_date_types(self, sample_items):
+        """extend_items should validate that start_date and end_date are date objects."""
+        paycheck, rent = sample_items
+        schedule = Schedule(paycheck, rent)
+
+        with pytest.raises(ValueError, match="start_date and end_date must be date objects"):
+            schedule.extend_items("2016-01-01", date(2016, 2, 1))
+
+        with pytest.raises(ValueError, match="start_date and end_date must be date objects"):
+            schedule.extend_items(date(2016, 1, 1), "2016-02-01")
+
+    def test_extend_items_start_after_or_equal_end(self, sample_items):
+        """extend_items should enforce start_date < end_date."""
+        paycheck, rent = sample_items
+        schedule = Schedule(paycheck, rent)
+
+        with pytest.raises(ValueError, match="end_date must be after start_date"):
+            schedule.extend_items(date(2016, 1, 5), date(2016, 1, 5))
+
+        with pytest.raises(ValueError, match="end_date must be after start_date"):
+            schedule.extend_items(date(2016, 1, 6), date(2016, 1, 5))
+
+    def test_extend_items_empty_result(self, sample_items):
+        """extend_items should return an empty DataFrame when no items fall in range."""
+        paycheck, rent = sample_items
+        schedule = Schedule(paycheck, rent)
+
+        # Choose a range long before the items start
+        start_date = date(2010, 1, 1)
+        end_date = date(2010, 2, 1)
+
+        df = schedule.extend_items(start_date, end_date)
+        assert isinstance(df, pd.DataFrame)
+        assert list(df.columns) == ["date", "name", "amount"]
+        assert len(df) == 0
         
     def test_repr(self, sample_items):
         """Test the string representation of Schedule"""

@@ -120,7 +120,7 @@ class Budget:
             
         return self.df.loc[mask, 'balance'].iloc[-1]
     
-    def plot(self) -> None:
+    def plot(self) -> None:  # pragma: no cover
         """Plot the budget balance over time."""
         import matplotlib.pyplot as plt
         

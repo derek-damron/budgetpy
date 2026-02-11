@@ -115,6 +115,24 @@ class TestItemOutput:
         assert item.get_next_date(date(2015, 12, 25)) == date(2016, 1, 1)
         assert item.get_next_date(date(2016, 1, 1)) == date(2016, 1, 1)
         assert item.get_next_date(date(2016, 1, 2)) == date(2016, 1, 8)
+
+        # Test multi-interval recurring patterns
+        daily_item = Item(name="Every 2 days", amount=100, day="2016-01-01", recurring="2 days")
+        assert daily_item.get_next_date(date(2015, 12, 31)) == date(2016, 1, 1)
+        # After the base date, next occurrences should be spaced by 2 days
+        assert daily_item.get_next_date(date(2016, 1, 2)) == date(2016, 1, 3)
+
+        weekly_item = Item(name="Every 2 weeks", amount=100, day="2016-01-01", recurring="2 weeks")
+        assert weekly_item.get_next_date(date(2015, 12, 25)) == date(2016, 1, 1)
+        assert weekly_item.get_next_date(date(2016, 1, 2)) == date(2016, 1, 15)
+
+        monthly_item = Item(name="Every 2 months", amount=100, day="2016-01-01", recurring="2 months")
+        assert monthly_item.get_next_date(date(2015, 12, 1)) == date(2016, 1, 1)
+        assert monthly_item.get_next_date(date(2016, 1, 2)) == date(2016, 3, 1)
+
+        yearly_item = Item(name="Every 2 years", amount=100, day="2016-01-01", recurring="2 years")
+        assert yearly_item.get_next_date(date(2015, 1, 1)) == date(2016, 1, 1)
+        assert yearly_item.get_next_date(date(2016, 1, 2)) == date(2018, 1, 1)
         
     def test_repr(self):
         """Test the string representation of Item"""
